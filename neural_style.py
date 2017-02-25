@@ -244,6 +244,7 @@ def build_vgg19(input_img):
   if args.verbose: print('loading model weights...')
   vgg_rawnet     = scipy.io.loadmat(args.model_weights)
   vgg_layers     = vgg_rawnet['layers'][0]
+  
   if args.verbose: print('constructing layers...')
   with tf.name_scope('input'):
     net['input']   = tf.Variable(np.zeros((1, h, w, d), dtype=np.float32), name='init_image')
@@ -679,7 +680,6 @@ def minimize_with_adam(sess, net, optimizer, init_img, loss):
         curr_loss = loss.eval()
         print("At iterate {}\tf=  {:.5E}".format(iterations, curr_loss))
       writer.add_summary(summary, global_step=iterations)
-      print('got past writer.add_summary somehow')
       iterations += 1
 
 def get_optimizer(loss):
