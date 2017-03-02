@@ -231,7 +231,6 @@ def parse_args():
 
 '''
   pre-trained vgg19 convolutional neural network
-
   remark: layers are manually initialized for clarity.
 '''
 vgg19_mean = np.array([123.68, 116.779, 103.939]).reshape((1,1,1,3))
@@ -404,8 +403,8 @@ def mask_style_layer(a, x, mask_img):
       mask = tf.stack(tensors, axis=2)
       mask = tf.stack(mask, axis=0)
       mask = tf.expand_dims(mask, 0)
-    a = tf.mul(a, mask)
-    x = tf.mul(x, mask)
+    a = tf.multiply(a, mask)
+    x = tf.multiply(x, mask)
   return a, x
 
 def sum_masked_style_losses(sess, net, style_imgs):
@@ -499,7 +498,6 @@ def sum_shortterm_temporal_losses(sess, net, frame, input_img):
 
 '''
   denoising loss function
-
   remark: not sure this does anything significant.
 '''
 def sum_total_variation_losses(sess, net, input_img):
@@ -658,7 +656,7 @@ def stylize(content_img, style_imgs, init_img, frame=None):
 def minimize_with_lbfgs(sess, net, optimizer, init_img):
   with tf.name_scope('minimize_with_lbfgs'):
     if args.verbose: print('\nMINIMIZING LOSS USING: L-BFGS OPTIMIZER')
-    init_op = tf.initialize_all_variables()
+    init_op = tf.global_variables_initializer()
     sess.run(init_op)
     writer, merged = get_summaries(sess)
     summary, _ = sess.run([merged, net['input'].assign(init_img)])
@@ -669,7 +667,7 @@ def minimize_with_adam(sess, net, optimizer, init_img, loss):
   with tf.name_scope('minimize_with_adam'):
     if args.verbose: print('\nMINIMIZING LOSS USING: ADAM OPTIMIZER')
     train_op = optimizer.minimize(loss)
-    init_op = tf.initialize_all_variables()
+    init_op = tf.global_variables_initializer()
     sess.run(init_op)
     writer, merged = get_summaries(sess)
     sess.run(net['input'].assign(init_img))
